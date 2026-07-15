@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Mini Payment Gateway{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="mb-4">
+  <h5 class="section-heading">Dashboard</h5>
+  <p class="small" style="color: #777; margin-top: 0.25rem;">Daraja STK Push Demo</p>
+</div>
+
+<!-- Stat row -->
+<div class="row g-2 mb-4">
+  <div class="col-6 col-md-3">
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1rem;">
+      <div class="small" style="color: #777; margin-bottom: 0.4rem;">Channels</div>
+      <span style="color: #eee; font-size: 1.6rem;">{{ channel_count }}</span>
+      <div class="small" style="color: #555; margin-top: 0.25rem;">{{ active_channel_count }} active</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1rem;">
+      <div class="small" style="color: #777; margin-bottom: 0.4rem;">Transactions</div>
+      <span style="color: #eee; font-size: 1.6rem;">{{ transaction_count }}</span>
+      <div class="small" style="color: #555; margin-top: 0.25rem;">{{ pending_count }} pending</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1rem;">
+      <div class="small" style="color: #777; margin-bottom: 0.4rem;">Completed</div>
+      <span style="color: #eee; font-size: 1.6rem;">{{ completed_count }}</span>
+      <div class="small" style="color: #555; margin-top: 0.25rem;">transactions</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1rem;">
+      <div class="small" style="color: #777; margin-bottom: 0.4rem;">Parking Sessions</div>
+      <span style="color: #eee; font-size: 1.6rem;">{{ session_count }}</span>
+      <div class="small" style="color: #555; margin-top: 0.25rem;">{{ active_session_count }} active</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA panels -->
+<div class="row g-2 mb-4">
+  <div class="col-md-6">
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1.25rem; height: 100%;">
+      <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">Payment Channels</div>
+      <p style="color: #777; font-size: 0.82rem; margin-bottom: 1rem;">
+        Configure M-Pesa, Stripe, and Bank payment providers. Credentials are stored securely and read at runtime.
+      </p>
+      <div class="d-flex gap-2">
+        <a href="/payments/channels/" class="btn-flat btn-sm">Channels</a>
+        <a href="/payments/channels/new/step1/" class="btn-flat btn-sm">New Channel</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1.25rem; height: 100%;">
+      <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">Parking</div>
+      <p style="color: #777; font-size: 0.82rem; margin-bottom: 1rem;">
+        Trigger a payment from the Parking demo module. Simulates a real business consumer using the gateway.
+      </p>
+      <a href="/parking/pay/" class="btn-flat btn-sm">Pay for Parking</a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent activity -->
+<div class="row g-2">
+  <!-- Recent Transactions -->
+  <div class="col-md-6">
+    <h5 class="section-heading" style="font-size: 0.85rem; color: #aaa;">Recent Transactions</h5>
+    {% if recent_transactions %}
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Channel</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tx in recent_transactions %}
+            <tr>
+              <td><code style="color: #888; font-size: 0.78rem;">{{ tx.reference|stringformat:"s"|slice:":8" }}…</code></td>
+              <td>{{ tx.channel.name }}</td>
+              <td>{{ tx.currency }} {{ tx.amount }}</td>
+              <td>
+                {% if tx.status == "completed" %}
+                  <span class="badge badge-ok">completed</span>
+                {% elif tx.status == "failed" or tx.status == "cancelled" %}
+                  <span class="badge badge-fail">{{ tx.status }}</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ tx.status }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="color: #555; font-size: 0.85rem;">No transactions yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Recent Parking Sessions -->
+  <div class="col-md-6">
+    <h5 class="section-heading" style="font-size: 0.85rem; color: #aaa;">Recent Parking Sessions</h5>
+    {% if recent_sessions %}
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Plate</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for session in recent_sessions %}
+            <tr>
+              <td>{{ session.plate_number }}</td>
+              <td>KES {{ session.amount }}</td>
+              <td>
+                {% if session.status == "paid" %}
+                  <span class="badge badge-ok">paid</span>
+                {% elif session.status == "cancelled" %}
+                  <span class="badge badge-fail">cancelled</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ session.status }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="color: #555; font-size: 0.85rem;">No sessions yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

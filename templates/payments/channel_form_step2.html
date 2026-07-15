@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}New Channel — Step 2{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <!-- Breadcrumb -->
+    <p style="color: #666; font-size: 0.82rem; margin-bottom: 1rem;">
+      <a href="{% url 'payments:channel_list' %}" style="color: #888; text-decoration: none;">Channels</a>
+      <span style="color: #444; margin: 0 0.4rem;">/</span>
+      <span style="color: #bbb;">New Channel</span>
+    </p>
+
+    <h5 class="section-heading">New Channel — Step 2</h5>
+    <p style="color: #777; font-size: 0.82rem; margin-bottom: 1.25rem;">
+      Channel: <span style="color: #bbb;">{{ name }}</span> &mdash; Provider: <span style="color: #bbb;">M-Pesa</span>
+    </p>
+
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1.5rem;">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="_name" value="{{ name }}">
+        <input type="hidden" name="_provider_type" value="{{ provider_type }}">
+
+        <!-- Identifiers -->
+        <p class="section-label">Identifiers</p>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label for="{{ form.shortcode.id_for_label }}" class="form-label">Shortcode</label>
+            {{ form.shortcode }}
+            {% if form.shortcode.errors %}<div class="invalid-feedback d-block">{{ form.shortcode.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ form.till_number.id_for_label }}" class="form-label">Till Number</label>
+            {{ form.till_number }}
+            {% if form.till_number.errors %}<div class="invalid-feedback d-block">{{ form.till_number.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ form.paybill_number.id_for_label }}" class="form-label">Paybill Number</label>
+            {{ form.paybill_number }}
+            {% if form.paybill_number.errors %}<div class="invalid-feedback d-block">{{ form.paybill_number.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="{{ form.account_reference_format.id_for_label }}" class="form-label">Account Reference Format</label>
+          {{ form.account_reference_format }}
+          {% if form.account_reference_format.errors %}<div class="invalid-feedback d-block">{{ form.account_reference_format.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Callback URLs -->
+        <p class="section-label">Callback URLs</p>
+
+        <div class="mb-3">
+          <label for="{{ form.callback_url.id_for_label }}" class="form-label">Callback URL</label>
+          {{ form.callback_url }}
+          {% if form.callback_url.errors %}<div class="invalid-feedback d-block">{{ form.callback_url.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="{{ form.validation_url.id_for_label }}" class="form-label">Validation URL</label>
+            {{ form.validation_url }}
+            {% if form.validation_url.errors %}<div class="invalid-feedback d-block">{{ form.validation_url.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ form.confirmation_url.id_for_label }}" class="form-label">Confirmation URL</label>
+            {{ form.confirmation_url }}
+            {% if form.confirmation_url.errors %}<div class="invalid-feedback d-block">{{ form.confirmation_url.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- Credentials -->
+        <p class="section-label">Credentials</p>
+        <div style="background: #161616; border: 1px solid #333; padding: 1rem; margin-bottom: 0.75rem;">
+          <p class="text-secondary small" style="margin-bottom: 0.75rem; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;">Stored encrypted at rest. Never logged.</p>
+          <div class="mb-3">
+            <label for="{{ form.consumer_key.id_for_label }}" class="form-label">Consumer Key</label>
+            {{ form.consumer_key }}
+            {% if form.consumer_key.errors %}<div class="invalid-feedback d-block">{{ form.consumer_key.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.consumer_secret.id_for_label }}" class="form-label">Consumer Secret</label>
+            {{ form.consumer_secret }}
+            {% if form.consumer_secret.errors %}<div class="invalid-feedback d-block">{{ form.consumer_secret.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="mb-0">
+            <label for="{{ form.passkey.id_for_label }}" class="form-label">Passkey</label>
+            {{ form.passkey }}
+            {% if form.passkey.errors %}<div class="invalid-feedback d-block">{{ form.passkey.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- Behaviour -->
+        <p class="section-label">Behaviour</p>
+
+        <div class="row g-3 mb-4 align-items-end">
+          <div class="col-md-4">
+            <label for="{{ form.transaction_timeout.id_for_label }}" class="form-label">Transaction Timeout (s)</label>
+            {{ form.transaction_timeout }}
+            {% if form.transaction_timeout.errors %}<div class="invalid-feedback d-block">{{ form.transaction_timeout.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ form.environment.id_for_label }}" class="form-label">Environment</label>
+            {{ form.environment }}
+            {% if form.environment.errors %}<div class="invalid-feedback d-block">{{ form.environment.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-4">
+            <div class="form-check mt-2">
+              {{ form.stk_push_enabled }}
+              <label class="form-check-label" for="{{ form.stk_push_enabled.id_for_label }}" style="color: #bbb; font-size: 0.83rem;">
+                STK Push Enabled
+              </label>
+              {% if form.stk_push_enabled.errors %}<div class="invalid-feedback d-block">{{ form.stk_push_enabled.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'payments:channel_step1' %}" class="btn-flat btn-sm">Back</a>
+          <button type="submit" class="btn-flat btn-sm">Save Channel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

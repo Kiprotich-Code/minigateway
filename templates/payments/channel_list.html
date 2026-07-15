@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Channels — Mini Payment Gateway{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  <h5 class="section-heading mb-0" style="border: none; padding: 0;">Payment Channels</h5>
+  <a href="{% url 'payments:channel_step1' %}" class="btn-flat btn-sm">New Channel</a>
+</div>
+
+{% if channels %}
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Provider</th>
+        <th>Environment</th>
+        <th>Enabled</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for channel in channels %}
+        <tr>
+          <td>{{ channel.name }}</td>
+          <td>{{ channel.get_provider_type_display }}</td>
+          <td style="color: #888;">{{ channel.environment }}</td>
+          <td style="color: {% if channel.enabled %}#6fcf6f{% else %}#888{% endif %};">
+            {% if channel.enabled %}yes{% else %}no{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="text-secondary" style="font-size: 0.85rem;">No channels configured.</p>
+{% endif %}
+{% endblock %}

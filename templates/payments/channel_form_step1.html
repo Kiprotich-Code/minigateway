@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}New Channel — Step 1{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <!-- Breadcrumb -->
+    <p style="color: #666; font-size: 0.82rem; margin-bottom: 1rem;">
+      <a href="{% url 'payments:channel_list' %}" style="color: #888; text-decoration: none;">Channels</a>
+      <span style="color: #444; margin: 0 0.4rem;">/</span>
+      <span style="color: #bbb;">New Channel</span>
+    </p>
+
+    <h5 class="section-heading">New Channel — Step 1</h5>
+
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1.5rem;">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+          {{ form.name }}
+          {% if form.name.errors %}
+            <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="{{ form.provider_type.id_for_label }}" class="form-label">Provider Type</label>
+          {{ form.provider_type }}
+          {% if form.provider_type.errors %}
+            <div class="invalid-feedback d-block">{{ form.provider_type.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'payments:channel_list' %}" class="btn-flat btn-sm">Cancel</a>
+          <button type="submit" class="btn-flat btn-sm">Next</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

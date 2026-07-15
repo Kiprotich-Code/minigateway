@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Parking Session — Mini Payment Gateway{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="d-flex align-items-center gap-2 mb-4">
+      <h5 class="section-heading mb-0" style="border: none; padding: 0;">Parking Session</h5>
+      {% if session.status == "paid" %}
+        <span class="badge badge-ok">paid</span>
+      {% elif session.status == "cancelled" %}
+        <span class="badge badge-fail">cancelled</span>
+      {% else %}
+        <span class="badge bg-secondary">{{ session.get_status_display }}</span>
+      {% endif %}
+    </div>
+
+    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; padding: 1.25rem;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <tbody>
+          <tr>
+            <td style="color: #777; font-size: 0.83rem; padding: 0.45rem 0; width: 40%; vertical-align: top;">Plate Number</td>
+            <td style="color: #eee; font-size: 0.85rem; padding: 0.45rem 0;">{{ session.plate_number }}</td>
+          </tr>
+          <tr>
+            <td style="color: #777; font-size: 0.83rem; padding: 0.45rem 0;">Phone</td>
+            <td style="color: #ccc; font-size: 0.85rem; padding: 0.45rem 0;">{{ session.phone }}</td>
+          </tr>
+          <tr>
+            <td style="color: #777; font-size: 0.83rem; padding: 0.45rem 0;">Amount</td>
+            <td style="color: #ccc; font-size: 0.85rem; padding: 0.45rem 0;">KES {{ session.amount }}</td>
+          </tr>
+          {% if session.slot %}
+          <tr>
+            <td style="color: #777; font-size: 0.83rem; padding: 0.45rem 0;">Slot</td>
+            <td style="color: #ccc; font-size: 0.85rem; padding: 0.45rem 0;">{{ session.slot }}</td>
+          </tr>
+          {% endif %}
+          {% if session.transaction %}
+          <tr>
+            <td style="color: #777; font-size: 0.83rem; padding: 0.45rem 0;">Transaction Ref</td>
+            <td style="color: #ccc; font-size: 0.85rem; padding: 0.45rem 0;">
+              <code style="color: #888; font-size: 0.8rem;">{{ session.transaction.reference }}</code>
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #777; font-size: 0.83rem; padding: 0.45rem 0;">Transaction Status</td>
+            <td style="padding: 0.45rem 0;">
+              {% with tx_status=session.transaction.status %}
+                {% if tx_status == "completed" %}
+                  <span class="badge badge-ok">completed</span>
+                {% elif tx_status == "failed" or tx_status == "cancelled" %}
+                  <span class="badge badge-fail">{{ session.transaction.get_status_display }}</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ session.transaction.get_status_display }}</span>
+                {% endif %}
+              {% endwith %}
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 d-flex gap-3">
+      <a href="" style="color: #888; font-size: 0.83rem; text-decoration: none;">Refresh</a>
+      <a href="{% url 'parking:pay' %}" style="color: #888; font-size: 0.83rem; text-decoration: none;">New payment</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
